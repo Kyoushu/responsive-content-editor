@@ -1,0 +1,6 @@
+{
+    "name": "kyoushu/responsive-content-editor",
+    "dependencies": {
+        "jquery": "~3.0"
+    }
+}
