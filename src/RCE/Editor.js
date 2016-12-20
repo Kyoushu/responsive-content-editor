@@ -9,6 +9,9 @@ RCE.Editor = (function(){
 
     Editor.prototype.config = {};
 
+    /**
+     * @returns {object}
+     */
     Editor.prototype.getState = function(){
 
         var state = {
@@ -23,6 +26,17 @@ RCE.Editor = (function(){
         return state;
 
     };
+
+    /**
+     * @param {object} state
+     */
+    Editor.prototype.setState = function(state)
+    {
+        // @todo
+    };
+
+    // @todo register widget
+    // @todo create widget instance (name, context)
 
     return Editor;
 

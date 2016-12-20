@@ -8,6 +8,28 @@ RCE.Column = (function(){
 
     Column.prototype.widget = null;
 
+    /**
+     * @returns {object}
+     */
+    Column.prototype.getState = function()
+    {
+        var state = {'widget': null};
+
+        if(this.widget){
+            state.widget = this.widget.getState();
+        }
+
+        return state;
+    };
+
+    /**
+     * @param {state} state
+     */
+    Column.prototype.setState = function(state)
+    {
+        // @todo
+    };
+
     return Column;
 
 })();
@@ -22,6 +44,9 @@ RCE.Editor = (function(){
 
     Editor.prototype.config = {};
 
+    /**
+     * @returns {object}
+     */
     Editor.prototype.getState = function(){
 
         var state = {
@@ -37,6 +62,17 @@ RCE.Editor = (function(){
 
     };
 
+    /**
+     * @param {object} state
+     */
+    Editor.prototype.setState = function(state)
+    {
+        // @todo
+    };
+
+    // @todo register widget
+    // @todo create widget instance (name, context)
+
     return Editor;
 
 })();
@@ -45,6 +81,28 @@ if(typeof RCE === 'undefined') var RCE = {};
 RCE.Row = (function(){
 
     var Row = function(){
+    };
+
+    /**
+     * @returns {object}
+     */
+    Row.prototype.getState = function()
+    {
+        var state = {'columns': []};
+
+        $.each(this.columns, function(index, column){
+            state.columns.push(column.getState());
+        });
+
+        return state;
+    };
+
+    /**
+     * @param {object} state
+     */
+    Row.prototype.setState = function(state)
+    {
+        // @todo
     };
 
     Row.prototype.columns = [];
@@ -60,22 +118,40 @@ RCE.Widget = (function(){
 
     };
 
+    Widget.prototype.name = null;
+
+    Widget.prototype.context = {};
+
     /**
-     * @param {object} context
      * @return {object} single jQuery element containing a preview
      */
-    Widget.prototype.createPreview = function(context)
+    Widget.prototype.createPreview = function()
     {
-
+        // @todo
     };
 
     /**
-     * @param {object} context
      * @return {object} single jQuery element containing an editor for the widget context
      */
-    Widget.prototype.createEditor = function(context)
+    Widget.prototype.createEditor = function()
     {
+        // @todo
+    };
 
+    /**
+     * @returns {object}
+     */
+    Widget.prototype.getState = function()
+    {
+        return {'name': this.name, 'context': this.context};
+    };
+
+    /**
+     * @param {object} state
+     */
+    Widget.prototype.setState = function(state)
+    {
+        // @todo
     };
 
     return Widget;
