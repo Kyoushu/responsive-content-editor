@@ -1,3 +1,7 @@
 /node_modules/
 /bower_components/
 /.idea/
+/tests/qunit.js
+/tests/qunit.css
+/tests/jquery.js
+/tests/rce.js

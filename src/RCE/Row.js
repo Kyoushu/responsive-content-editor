@@ -6,6 +6,16 @@ RCE.Row = (function(){
     };
 
     /**
+     * @type {null|RCE.Editor}
+     */
+    Row.prototype.editor = null;
+
+    /**
+     * @type {Array.<RCE.Column>}
+     */
+    Row.prototype.columns = [];
+
+    /**
      * @returns {object}
      */
     Row.prototype.getState = function()
@@ -24,10 +34,41 @@ RCE.Row = (function(){
      */
     Row.prototype.setState = function(state)
     {
-        // @todo
+        var row = this;
+
+        this.columns = [];
+
+        $.each(state.columns, function(index, columnState){
+            var column = new RCE.Column();
+            row.addColumn(column);
+            column.setState(columnState);
+        });
     };
 
-    Row.prototype.columns = [];
+    /**
+     * @param {RCE.Column} column
+     */
+    Row.prototype.addColumn = function(column)
+    {
+        this.columns.push(column);
+        column.row = this;
+    };
+
+    /**
+     * @param {RCE.Column} column
+     * @todo
+     */
+    Row.prototype.moveColumnLeft = function(column)
+    {
+    };
+
+    /**
+     * @param {RCE.Column} column
+     * @todo
+     */
+    Row.prototype.moveColumnRight = function(column)
+    {
+    };
 
     return Row;
 

@@ -2,13 +2,32 @@ if(typeof RCE === 'undefined') var RCE = {};
 
 RCE.Widget = (function(){
 
-    var Widget = function(){
-
+    /**
+     * @param {object|undefined} context
+     * @constructor
+     */
+    var Widget = function(context)
+    {
+        if(typeof context === 'undefined') context = {};
+        this.context = context;
     };
 
+    /**
+     * @type {null|string}
+     */
     Widget.prototype.name = null;
 
-    Widget.prototype.context = {};
+    /**
+     * Name to be shown in widget selector when configuring a column
+     *
+     * @type {null|string}
+     */
+    Widget.prototype.humanName = null;
+
+    /**
+     * @type {null|object}
+     */
+    Widget.prototype.context = null;
 
     /**
      * @return {object} single jQuery element containing a preview
@@ -39,7 +58,8 @@ RCE.Widget = (function(){
      */
     Widget.prototype.setState = function(state)
     {
-        // @todo
+        this.name = state.name;
+        this.context = state.context;
     };
 
     return Widget;
