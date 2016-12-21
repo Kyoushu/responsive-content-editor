@@ -51,23 +51,29 @@ RCE.Row = (function(){
     Row.prototype.addColumn = function(column)
     {
         this.columns.push(column);
+
+        // Set new columns to full grid width
+        column.setSpan('small', this.editor.config.grid_columns);
+        column.setSpan('medium', this.editor.config.grid_columns);
+        column.setSpan('large', this.editor.config.grid_columns);
+
         column.row = this;
     };
 
     /**
      * @param {RCE.Column} column
-     * @todo
      */
     Row.prototype.moveColumnLeft = function(column)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.columns, column, -1);
     };
 
     /**
      * @param {RCE.Column} column
-     * @todo
      */
     Row.prototype.moveColumnRight = function(column)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.columns, column, 1);
     };
 
     return Row;

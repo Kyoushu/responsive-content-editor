@@ -62,7 +62,7 @@ RCE.Editor = (function(){
     {
         var editor = this;
 
-        this.config = state.config;
+        this.config = $.extend({}, defaults, state.config);
         this.rows = [];
 
         $.each(state.rows, function(index, rowState){
@@ -135,18 +135,18 @@ RCE.Editor = (function(){
 
     /**
      * @param {RCE.Row} row
-     * @todo
      */
     Editor.prototype.moveRowUp = function(row)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.rows, row, -1);
     };
 
     /**
      * @param {RCE.Row} row
-     * @todo
      */
     Editor.prototype.moveRowDown = function(row)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.rows, row, 1);
     };
 
     return Editor;

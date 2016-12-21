@@ -5,12 +5,18 @@ RCE.Column = (function(){
     var Column = function(widget){
         if(typeof widget === 'undefined') widget = null;
         this.widget = widget;
+        this.spans = {};
     };
 
     /**
      * @type {null|RCE.Widget}
      */
     Column.prototype.widget = null;
+
+    /**
+     * @type {null|Object.<string, number>}
+     */
+    Column.prototype.spans = null;
 
     /**
      * @type {null|RCE.Row}
@@ -22,7 +28,7 @@ RCE.Column = (function(){
      */
     Column.prototype.getState = function()
     {
-        var state = {'widget': null};
+        var state = {'widget': null, 'spans': this.spans};
 
         if(this.widget){
             state.widget = this.widget.getState();
@@ -32,10 +38,21 @@ RCE.Column = (function(){
     };
 
     /**
+     * @param {string} name
+     * @param {number} span
+     */
+    Column.prototype.setSpan = function(name, span)
+    {
+        this.spans[name] = span;
+    };
+
+    /**
      * @param {Object.<string, *>} state
      */
     Column.prototype.setState = function(state)
     {
+        this.spans = state.spans;
+
         if(state.widget){
             var widget = this.row.editor.createWidget(state.widget.name);
             widget.setState(state.widget);
@@ -110,7 +127,7 @@ RCE.Editor = (function(){
     {
         var editor = this;
 
-        this.config = state.config;
+        this.config = $.extend({}, defaults, state.config);
         this.rows = [];
 
         $.each(state.rows, function(index, rowState){
@@ -183,18 +200,18 @@ RCE.Editor = (function(){
 
     /**
      * @param {RCE.Row} row
-     * @todo
      */
     Editor.prototype.moveRowUp = function(row)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.rows, row, -1);
     };
 
     /**
      * @param {RCE.Row} row
-     * @todo
      */
     Editor.prototype.moveRowDown = function(row)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.rows, row, 1);
     };
 
     return Editor;
@@ -253,26 +270,113 @@ RCE.Row = (function(){
     Row.prototype.addColumn = function(column)
     {
         this.columns.push(column);
+
+        // Set new columns to full grid width
+        column.setSpan('small', this.editor.config.grid_columns);
+        column.setSpan('medium', this.editor.config.grid_columns);
+        column.setSpan('large', this.editor.config.grid_columns);
+
         column.row = this;
     };
 
     /**
      * @param {RCE.Column} column
-     * @todo
      */
     Row.prototype.moveColumnLeft = function(column)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.columns, column, -1);
     };
 
     /**
      * @param {RCE.Column} column
-     * @todo
      */
     Row.prototype.moveColumnRight = function(column)
     {
+        this.rows = RCE.Utils.moveArrayObject(this.columns, column, 1);
     };
 
     return Row;
+
+})();
+if(typeof RCE === 'undefined') var RCE = {};
+
+RCE.Utils = (function(){
+
+    /**
+     * @returns {string}
+     */
+    function createUUID()
+    {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    /**
+     * @param {Object} _object
+     * @returns {string}
+     */
+    function getObjectUUID(_object)
+    {
+        if(typeof _object._UUID === 'undefined'){
+            _object._UUID = createUUID();
+        }
+        return _object._UUID;
+    }
+
+    /**
+     * @param {Array} _array
+     * @param {Object} _object
+     * @returns {*}
+     */
+    function getArrayObjectIndex(_array, _object)
+    {
+        var matchedIndex = null;
+        var UUID = getObjectUUID(_object);
+        $.each(_array, function(index, otherObject){
+            if(getObjectUUID(otherObject) === UUID){
+                matchedIndex = index;
+                return false;
+            }
+        });
+        if(matchedIndex === null) throw 'object not found in array';
+        return matchedIndex;
+    }
+
+    /**
+     * @param {Array} _array
+     * @param {Object} _object
+     * @param {number} direction
+     * @todo
+     */
+    function moveArrayObject(_array, _object, direction)
+    {
+        direction = parseInt(direction);
+        if(direction === 0) return _array;
+
+        if(direction < -1) direction = -1;
+        if(direction > 1) direction = 1;
+
+        var oldIndex = getArrayObjectIndex(_array, _object);
+        var newIndex = oldIndex + direction;
+
+        if(typeof _array[newIndex] === 'undefined') return _array;
+
+        _array[oldIndex] = _array[newIndex];
+        _array[newIndex] = _object;
+
+        return _array;
+    }
+
+    return {
+        'getObjectUUID': getObjectUUID,
+        'createUUID': createUUID,
+        'getArrayObjectIndex': getArrayObjectIndex,
+        'moveArrayObject': moveArrayObject
+    }
 
 })();
 if(typeof RCE === 'undefined') var RCE = {};
