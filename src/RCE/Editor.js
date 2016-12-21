@@ -1,10 +1,10 @@
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Editor = (function(){
 
     var defaults = {
         'grid_columns': 12
     };
+
+    var widgets = {};
 
     /**
      * @param {object} inputElement a single jQuery element for a form text input
@@ -21,17 +21,25 @@ RCE.Editor = (function(){
         config = $.extend({}, defaults, config);
         this.config = config;
 
-        this.widgets = {};
-
+        this.view = new RCE.Views.EditorView(this);
+        inputElement.css('display', none);
+        inputElement.after(this.view.render());
     };
 
+    /**
+     * @type {null|jQuery}
+     */
     Editor.prototype.inputElement = null;
+
+    /**
+     * @type {null|Object.<string, *>}
+     */
     Editor.prototype.config = null;
 
     /**
-     * @type {Object.<string, RCE.Widget>}
+     * @type {null|RCE.Views.EditorView}
      */
-    Editor.prototype.widgets = null;
+    Editor.prototype.view = null;
 
     /**
      * @type {Array.<RCE.Row>}
@@ -91,7 +99,7 @@ RCE.Editor = (function(){
      */
     Editor.prototype.registerWidget = function(widget)
     {
-        this.widgets[widget.name] = widget;
+        widgets[widget.name] = widget;
     };
 
     /**
@@ -101,8 +109,8 @@ RCE.Editor = (function(){
      */
     Editor.prototype.findWidgetByName = function(name)
     {
-        if(typeof this.widgets[name] === 'undefined') throw 'widget named ' + name + ' could not be found';
-        return this.widgets[name];
+        if(typeof widgets[name] === 'undefined') throw 'widget named ' + name + ' could not be found';
+        return widgets[name];
     };
 
     /**

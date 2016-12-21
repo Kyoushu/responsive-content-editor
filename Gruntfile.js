@@ -18,6 +18,8 @@ module.exports = function(grunt) {
         concat: {
             dist: {
                 src: [
+                    'src/RCE/main.js',
+                    'src/RCE/Views/View.js',
                     'src/**/*.js'
                 ],
                 dest: 'dist/rce.js'

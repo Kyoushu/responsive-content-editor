@@ -1,5 +1,33 @@
-if(typeof RCE === 'undefined') var RCE = {};
+var RCE = {
+    'Views': {}
+};
+RCE.Views.View = (function(){
 
+    /**
+     * @param {Object|undefined} context
+     * @constructor
+     */
+    var View = function(context)
+    {
+        if(typeof context === 'undefined') context = {};
+        this.context = context;
+    };
+
+    /**
+     * @type {Object}
+     */
+    View.prototype.context = null;
+
+    /**
+     * @return {jQuery}
+     */
+    View.prototype.render = function()
+    {
+    };
+
+    return View;
+
+})();
 RCE.Column = (function(){
 
     var Column = function(widget){
@@ -63,13 +91,13 @@ RCE.Column = (function(){
     return Column;
 
 })();
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Editor = (function(){
 
     var defaults = {
         'grid_columns': 12
     };
+
+    var widgets = {};
 
     /**
      * @param {object} inputElement a single jQuery element for a form text input
@@ -86,17 +114,25 @@ RCE.Editor = (function(){
         config = $.extend({}, defaults, config);
         this.config = config;
 
-        this.widgets = {};
-
+        this.view = new RCE.Views.EditorView(this);
+        inputElement.css('display', none);
+        inputElement.after(this.view.render());
     };
 
+    /**
+     * @type {null|jQuery}
+     */
     Editor.prototype.inputElement = null;
+
+    /**
+     * @type {null|Object.<string, *>}
+     */
     Editor.prototype.config = null;
 
     /**
-     * @type {Object.<string, RCE.Widget>}
+     * @type {null|RCE.Views.EditorView}
      */
-    Editor.prototype.widgets = null;
+    Editor.prototype.view = null;
 
     /**
      * @type {Array.<RCE.Row>}
@@ -156,7 +192,7 @@ RCE.Editor = (function(){
      */
     Editor.prototype.registerWidget = function(widget)
     {
-        this.widgets[widget.name] = widget;
+        widgets[widget.name] = widget;
     };
 
     /**
@@ -166,8 +202,8 @@ RCE.Editor = (function(){
      */
     Editor.prototype.findWidgetByName = function(name)
     {
-        if(typeof this.widgets[name] === 'undefined') throw 'widget named ' + name + ' could not be found';
-        return this.widgets[name];
+        if(typeof widgets[name] === 'undefined') throw 'widget named ' + name + ' could not be found';
+        return widgets[name];
     };
 
     /**
@@ -217,8 +253,6 @@ RCE.Editor = (function(){
     return Editor;
 
 })();
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Row = (function(){
 
     var Row = function(){
@@ -298,8 +332,6 @@ RCE.Row = (function(){
     return Row;
 
 })();
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Utils = (function(){
 
     /**
@@ -350,7 +382,6 @@ RCE.Utils = (function(){
      * @param {Array} _array
      * @param {Object} _object
      * @param {number} direction
-     * @todo
      */
     function moveArrayObject(_array, _object, direction)
     {
@@ -379,8 +410,37 @@ RCE.Utils = (function(){
     }
 
 })();
-if(typeof RCE === 'undefined') var RCE = {};
+RCE.Views.EditorView = (function(){
 
+    /**
+     * @param {Object|undefined} context
+     * @constructor
+     */
+    var EditorView = function(context)
+    {
+        RCE.Views.View.call(this,arguments); // Extend base view
+    };
+
+    /**
+     * @return {jQuery}
+     */
+    EditorView.prototype.render = function()
+    {
+        /** @var {RCE.Editor} editor */
+        var editor = this.context;
+
+        var container = $('<div>').addClass('rce-editor');
+
+        var rowsContainer = $('<div>').addClass('rce-editor--rows');
+        container.append(rowsContainer);
+
+        return container;
+
+    };
+
+    return EditorView;
+
+})();
 RCE.Widget = (function(){
 
     /**
@@ -413,7 +473,7 @@ RCE.Widget = (function(){
     /**
      * @return {object} single jQuery element containing a preview
      */
-    Widget.prototype.createPreview = function()
+    Widget.prototype.renderPreviewElement = function()
     {
         // @todo
     };
@@ -421,7 +481,7 @@ RCE.Widget = (function(){
     /**
      * @return {object} single jQuery element containing an editor for the widget context
      */
-    Widget.prototype.createEditor = function()
+    Widget.prototype.renderContextEditorElement = function()
     {
         // @todo
     };

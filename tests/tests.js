@@ -12,7 +12,7 @@
         editor = new RCE.Editor(inputElement, {
             'grid_columns': 16
         });
-        assert.ok(true);
+        assert.ok(typeof editor !== 'undefined');
     });
 
     QUnit.test('initial editor state', function(assert){

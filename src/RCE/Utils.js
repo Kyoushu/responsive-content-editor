@@ -1,5 +1,3 @@
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Utils = (function(){
 
     /**
@@ -50,7 +48,6 @@ RCE.Utils = (function(){
      * @param {Array} _array
      * @param {Object} _object
      * @param {number} direction
-     * @todo
      */
     function moveArrayObject(_array, _object, direction)
     {

@@ -1,5 +1,3 @@
-if(typeof RCE === 'undefined') var RCE = {};
-
 RCE.Widget = (function(){
 
     /**
@@ -32,7 +30,7 @@ RCE.Widget = (function(){
     /**
      * @return {object} single jQuery element containing a preview
      */
-    Widget.prototype.createPreview = function()
+    Widget.prototype.renderPreviewElement = function()
     {
         // @todo
     };
@@ -40,7 +38,7 @@ RCE.Widget = (function(){
     /**
      * @return {object} single jQuery element containing an editor for the widget context
      */
-    Widget.prototype.createEditor = function()
+    Widget.prototype.renderContextEditorElement = function()
     {
         // @todo
     };
